@@ -1,0 +1,131 @@
+import sensor
+import time
+import pyb
+
+# LEDs
+white_led = pyb.LED(4)
+blue_led = pyb.LED(3)
+
+# Turn ON flash / white LED
+white_led.on()
+
+# UART to Arduino
+# OpenMV P4 = TX, P5 = RX on UART 3
+uart = pyb.UART(3, 9600, timeout_char=1000)
+
+# Camera
+FPS = 50
+EXPOSURE_US = 9000
+GAIN_DB = 0
+
+sensor.reset()
+sensor.set_pixformat(sensor.GRAYSCALE)
+sensor.set_framesize(sensor.QVGA)
+sensor.set_framerate(FPS)
+
+sensor.skip_frames(time=1000)
+
+sensor.set_auto_gain(False, gain_db=GAIN_DB)
+sensor.set_auto_whitebal(False)
+sensor.set_auto_exposure(False, exposure_us=EXPOSURE_US)
+
+sensor.skip_frames(time=500)
+
+clock = time.clock()
+
+# ROIs: (x, y, w, h)
+CAR_ROI = (164, 86, 97, 32)
+PEOPLE_ROI = (105, 43, 59, 32)
+
+# Thresholds
+CAR_THRESHOLD = (60, 165)
+PEOPLE_THRESHOLD = (60, 200)
+
+# Filters
+MIN_PIXELS_CAR = 80
+MIN_AREA_CAR = 80
+MAX_PIXELS_CAR = 500
+MAX_AREA_CAR = 500
+
+MIN_PIXELS_PEOPLE = 60
+MIN_AREA_PEOPLE = 60
+MAX_PIXELS_PEOPLE = 1000
+MAX_AREA_PEOPLE = 1000
+
+blink_counter = 0
+
+while True:
+    clock.tick()
+    img = sensor.snapshot()
+
+    img.draw_rectangle(CAR_ROI, color=255, thickness=2)
+    img.draw_rectangle(PEOPLE_ROI, color=127, thickness=2)
+
+    # Count cars
+    car_blobs = img.find_blobs(
+        [CAR_THRESHOLD],
+        roi=CAR_ROI,
+        pixels_threshold=MIN_PIXELS_CAR,
+        area_threshold=MIN_AREA_CAR,
+        merge=False
+    )
+
+    car_count = 0
+
+    for b in car_blobs:
+        if b.pixels() < MIN_PIXELS_CAR:
+            continue
+        if b.pixels() > MAX_PIXELS_CAR:
+            continue
+        if b.area() < MIN_AREA_CAR:
+            continue
+        if b.area() > MAX_AREA_CAR:
+            continue
+
+        car_count += 1
+
+        img.draw_rectangle(b.rect(), color=255, thickness=2)
+        img.draw_cross(b.cx(), b.cy(), color=255)
+        img.draw_string(b.x(), b.y() - 10, "CAR", color=255)
+
+    # Count people
+    people_blobs = img.find_blobs(
+        [PEOPLE_THRESHOLD],
+        roi=PEOPLE_ROI,
+        pixels_threshold=MIN_PIXELS_PEOPLE,
+        area_threshold=MIN_AREA_PEOPLE,
+        merge=False
+    )
+
+    people_count = 0
+
+    for b in people_blobs:
+        if b.pixels() < MIN_PIXELS_PEOPLE:
+            continue
+        if b.pixels() > MAX_PIXELS_PEOPLE:
+            continue
+        if b.area() < MIN_AREA_PEOPLE:
+            continue
+        if b.area() > MAX_AREA_PEOPLE:
+            continue
+
+        people_count += 1
+
+        img.draw_rectangle(b.rect(), color=127, thickness=2)
+        img.draw_cross(b.cx(), b.cy(), color=255)
+        img.draw_string(b.x(), b.y() - 10, "PERSON", color=127)
+
+    # Show counts
+    img.draw_string(CAR_ROI[0], CAR_ROI[1] - 20, "CARS:%d" % car_count, color=255)
+    img.draw_string(PEOPLE_ROI[0], PEOPLE_ROI[1] - 20, "PEOPLE:%d" % people_count, color=127)
+
+    # Send to Arduino
+    uart.write("%d,%d\n" % (car_count, people_count))
+
+    # Blink blue LED to show OpenMV is running/sending
+    blink_counter += 1
+    if blink_counter >= 10:
+        blue_led.toggle()
+        blink_counter = 0
+
+    print("Cars:", car_count, "People:", people_count, "FPS:", clock.fps())
