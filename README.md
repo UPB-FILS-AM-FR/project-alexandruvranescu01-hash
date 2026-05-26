@@ -19,17 +19,6 @@ Traditional traffic lights operate on rigid, static timers that fail to adapt to
 
 By integrating Edge AI image processing with local microcontrollers, this project offers a low-cost, low-latency, and scalable infrastructure alternative. By ensuring data is processed on-board rather than streamed to a cloud server, the system also respects civic privacy laws while providing fast, reliable adaptive intersection control.
 
-## Architecture
-
-### Block diagram
-
-![Block Diagram](schematics/block_diagram.png)
-
-### Schematic
-
-![Schematic](schematics/kicad_schematic.png)
-
-### Components
 
 ### Components
 
