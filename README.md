@@ -31,14 +31,16 @@ By integrating Edge AI image processing with local microcontrollers, this projec
 
 ### Components
 
+### Components
+
 | Device | Usage | Price |
 |--------|--------|-------|
-| Arduino Nano Every | Unitate centrală de decizie, parsare UART și control semafor | [75 RON](https://www.optimusdigital.ro/ro/placi-compatibile-arduino/3739-placa-de-dezvoltare-compatibila-cu-arduino-nano-every.html) |
-| OpenMV Cam P4 | Achiziție imagine, Edge AI și numărare vehicule/pietoni | [390 RON](https://www.optimusdigital.ro/ro/camere/2534-openmv-cam-h7.html) |
-| LED Verde | Semnalizare permisiune trecere mașini | [0.5 RON](https://www.optimusdigital.ro/ro/led-uri/17-led-verde-5mm.html) |
-| LED Roșu | Semnalizare oprire mașini / Prioritate pietoni | [0.5 RON](https://www.optimusdigital.ro/ro/led-uri/16-led-rosu-5mm.html) |
-| Jumper Wires | Conectarea magistralelor UART și a liniilor de masă comună (GND) | [7 RON](https://www.optimusdigital.ro/ro/fire-fire-mufate/884-set-fire-tata-tata-40p-10-cm.html) |
-| Breadboard | Placă de prototipare pentru distribuirea semnalelor hardware | [10 RON](https://www.optimusdigital.ro/ro/prototipare-breadboard-uri/8-breadboard-830-points.html) |
+| Arduino Nano Every | Central decision unit, parses UART data strings, and controls traffic light cycles | [75 RON](https://www.optimusdigital.ro/ro/placi-compatibile-arduino/3739-placa-de-dezvoltare-compatibila-cu-arduino-nano-every.html) |
+| OpenMV Cam P4 | Live image acquisition, on-board Edge AI processing, and vehicle/pedestrian blob counting | [390 RON](https://www.optimusdigital.ro/ro/camere/2534-openmv-cam-h7.html) |
+| Green LED | High-intensity light indicator signifying vehicle right-of-way | [0.5 RON](https://www.optimusdigital.ro/ro/led-uri/17-led-verde-5mm.html) |
+| Red LED | High-intensity light indicator signifying vehicle stop / pedestrian crossing priority | [0.5 RON](https://www.optimusdigital.ro/ro/led-uri/16-led-rosu-5mm.html) |
+| Jumper Wires | Interconnecting hardware communication buses (UART) and routing common ground (GND) references | [7 RON](https://www.optimusdigital.ro/ro/fire-fire-mufate/884-set-fire-tata-tata-40p-10-cm.html) |
+| Breadboard | Solderless prototyping platform for securing electrical contacts and hardware power distribution | [10 RON](https://www.optimusdigital.ro/ro/prototipare-breadboard-uri/8-breadboard-830-points.html) |
 
 ### Libraries
 
