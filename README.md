@@ -48,25 +48,6 @@ By integrating Edge AI image processing with local microcontrollers, this projec
 | [sensor (MicroPython)](https://docs.openmv.io/library/omv.sensor.html) | OpenMV camera sensor control module | Used to reset the camera, lock auto-exposure/gain parameters, and capture grayscale QVGA frame snapshots. |
 | [Arduino AVR Core](https://github.com/arduino/ArduinoCore-megaavr) | Hardware abstraction layer library for megaAVR architectures | Pre-installed core library used for handling standard GPIO (`digitalWrite`) and managing `Serial1` hardware UART lines on the ATMEGA4809. |
 
-## Log
-
-### Week 6 - 12 May
-* Set up the local workspace environments on the developer machine by installing OpenMV IDE and Arduino IDE.
-* Mounted the OpenMV Cam P4 and configured initial grayscale frame parameters (QVGA resolution, explicit exposure controls to handle lighting variations).
-* Sketched out the basic bounding box regions for both the vehicle paths (`CAR_ROI`) and crosswalk sidewalk tracking (`PEOPLE_ROI`).
-
-### Week 7 - 19 May
-* Developed the computer vision tracking algorithm in Python utilizing thresholding filters and size bounding restrictions to optimize blob identification.
-* Programmed the raw serialization logic on OpenMV to continuously output string records over hardware pins (`uart.write`).
-* Wrote the C++ interrupt and parsing subsystem for the Arduino Nano Every to successfully tokenize comma-separated frames without clogging execution threads.
-* Wired up the test breadboard prototype, linking common grounds, the active UART TX-to-RX communication bridges, and the output traffic LEDs.
-
-### Week 20 - 26 May
-* Migrated workspace files and environments cleanly onto the current workspace laptop. Resolving device configurations (`Registers Emulation: None` inside Arduino IDE).
-* Validated the system architecture on the new development terminal via the Arduino Serial Monitor window at 9600 baud.
-* Verified proper evaluation loops (4000ms cycles) and conditional state changes when object counts shift dynamically in front of the camera lens.
-* Compiled and finalized system documentation logs, circuit specifications, and codebase modules into the GitHub repository layout.
-
 ## Reference links
 
 [OpenMV Cam UART Documentation](https://docs.openmv.io/library/pyb.UART.html)
