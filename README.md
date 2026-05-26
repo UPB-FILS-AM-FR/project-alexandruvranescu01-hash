@@ -1,4 +1,4 @@
-# Your Project Name
+# Smart Traffic Light with Video Detection (Cars and Pedestrians)
 
 | | |
 |-|-|
