@@ -1,0 +1,110 @@
+// Arduino Nano Every
+// OpenMV P4 TX -> Arduino D0 RX
+// OpenMV GND   -> Arduino GND
+
+int greenLed = 4; // your green LED
+int redLed = 5;   // your red LED
+
+int cars = 0;
+int people = 0;
+
+char data[10];
+int indexPos = 0;
+
+unsigned long lastCheck = 0;
+const unsigned long CHECK_TIME = 4000;
+
+void setup() {
+  pinMode(greenLed, OUTPUT);
+  pinMode(redLed, OUTPUT);
+
+  Serial.begin(9600);
+  Serial1.begin(9600);
+
+  digitalWrite(greenLed, HIGH);
+  digitalWrite(redLed, LOW);
+
+  Serial.println("Started");
+}
+
+void loop() {
+  readOpenMV();
+
+  if (millis() - lastCheck >= CHECK_TIME) {
+    lastCheck = millis();
+
+    if (people > cars) {
+      digitalWrite(greenLed, LOW);
+      digitalWrite(redLed, HIGH);
+      Serial.println("PEOPLE GREATER -> RED");
+    } else {
+      digitalWrite(greenLed, HIGH);
+      digitalWrite(redLed, LOW);
+      Serial.println("CARS GREATER/EQUAL -> GREEN");
+    }
+
+    Serial.print("Cars: ");
+    Serial.print(cars);
+    Serial.print(" People: ");
+    Serial.println(people);
+  }
+}
+
+void readOpenMV() {
+  while (Serial1.available()) {
+    char c = Serial1.read();
+
+    if (c == '\n') {
+      data[indexPos] = '\0';
+      parseData();
+      indexPos = 0;
+    } 
+    else if (c != '\r') {
+      if (indexPos < 9) {
+        data[indexPos] = c;
+        indexPos++;
+      } else {
+        indexPos = 0; // bad/too long data
+      }
+    }
+  }
+}
+
+void parseData() {
+  int commaCount = 0;
+  int commaPos = -1;
+
+  for (int i = 0; data[i] != '\0'; i++) {
+    if (data[i] == ',') {
+      commaCount++;
+      commaPos = i;
+    }
+
+    // reject anything not digit or comma
+    if (!isDigit(data[i]) && data[i] != ',') {
+      return;
+    }
+  }
+
+  // must be exactly one comma
+  if (commaCount != 1) {
+    return;
+  }
+
+  data[commaPos] = '\0';
+
+  int newCars = atoi(data);
+  int newPeople = atoi(data + commaPos + 1);
+
+  // reject wrong values like 11 cars or 31 people
+  if (newCars < 0 || newCars > 9) {
+    return;
+  }
+
+  if (newPeople < 0 || newPeople > 9) {
+    return;
+  }
+
+  cars = newCars;
+  people = newPeople;
+}
